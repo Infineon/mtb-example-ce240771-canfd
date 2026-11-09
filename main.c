@@ -62,7 +62,13 @@
 #define USE_CAN_MODE            CAN_FD_MODE
 
 /* CAN channel number */
-#define CAN_HW_CHANNEL          1 
+#if defined (CY_DEVICE_TVIIC2D6M) || defined (CY_DEVICE_TVIIC2D4M)
+#define CAN_HW_CHANNEL          1
+#elif defined (CY_DEVICE_TVIIBE1M)
+#define CAN_HW_CHANNEL          0
+#else
+#define CAN_HW_CHANNEL          2
+#endif
 
 #define CAN_BUFFER_INDEX        0
 /* CAN data length code, frame has 8 data bytes in this example */
@@ -86,14 +92,14 @@ void isr_button (void);
 /* This structure initializes the CANFD interrupt for the NVIC */
 cy_stc_sysint_t canfd_irq_cfg =
 {
-    .intrSrc  = (NvicMux2_IRQn << CY_SYSINT_INTRSRC_MUXIRQ_SHIFT) | CANFD_IRQ_0, /* Source of interrupt signal */
+    .intrSrc  = (IRQn_Type)((NvicMux2_IRQn << CY_SYSINT_INTRSRC_MUXIRQ_SHIFT) | CANFD_IRQ_0), /* Source of interrupt signal */
     .intrPriority = 1U, /* Interrupt priority */
 };
 
 /* This structure initializes the button interrupt for the NVIC */
 cy_stc_sysint_t button_intr_config =
 {
-    .intrSrc  = (NvicMux2_IRQn << CY_SYSINT_INTRSRC_MUXIRQ_SHIFT) | CYBSP_USER_BTN_IRQ,
+    .intrSrc  = (IRQn_Type)((NvicMux2_IRQn << CY_SYSINT_INTRSRC_MUXIRQ_SHIFT) | CYBSP_USER_BTN_IRQ),
     .intrPriority = 0U,
 };
 
